@@ -7,11 +7,18 @@ include_once 'entity/TaskCreator.php';
 $connection = new DatabaseConnectionManager();
 $connection->openConnection();
 
-$creator = new TaskCreator();
-$creator->createTask("Test", "low");
-$creator->createTask("Test", "medium");
-$creator->createTask("Test", "high");
-$creator->createTask("Test", "high");
-$creator->createTask("Test", "high");
+$taskCreator = new TaskCreator($connection);
+$taskCreator->createTask('Test1', 'high');
+$taskCreator->createTask('Test2', 'low');
 
+$connection->saveData();
 $connection->closeConnection();
+
+$connection2 = new DatabaseConnectionManager();
+$connection2->openConnection();
+
+$tasks = $connection2->findAllTasks();
+//var_dump($tasks);
+echo count($tasks)."\n";
+
+$connection2->closeConnection();
