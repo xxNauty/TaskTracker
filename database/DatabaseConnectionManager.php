@@ -17,10 +17,34 @@ class DatabaseConnectionManager
         $this->data = json_decode(file_get_contents(self::DATABASE_URL)) ?? [];
     }
 
-    public function appendData(Task $task): void
+//    public function appendData(Task $task): void
+//    {
+//        $this->data[] = $task;
+//    }
+
+    private function getLastTaskId(): int
     {
-        $this->data[] = $task;
+        $task = end($this->data);
+        if($task){
+            return $task->id;
+        }
+        return 0;
     }
+
+    public function createTask(string $description, Priority $priority): void
+    {
+        $this->data[] = new Task($this->getLastTaskId(), $description, $priority);
+    }
+
+    public function removeTask(string $id): void
+    {
+        foreach ($this->data as $key => $task) {
+            if ($task->id === $id) {
+                unset($this->data[$key]);
+            }
+        }
+    }
+
 
     public function findTask(string $id): ?object //todo: sprawdzić czy da się poprawić na ?Task
     {
@@ -38,18 +62,8 @@ class DatabaseConnectionManager
         return $this->data;
     }
 
-    public function getLastTaskId(): int
-    {
-        $task = end($this->data);
-        if($task){
-            return $task->id;
-        }
-        return 0;
-    }
-
     public function saveData(): void
     {
-//        var_dump($this->data);
         file_put_contents(self::DATABASE_URL, json_encode($this->data));
     }
 
