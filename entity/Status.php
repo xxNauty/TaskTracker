@@ -1,8 +1,9 @@
 <?php
 
+//name = value
 enum Status: string
 {
-    case Waiting = 'waiting';
-    case In_Progress = 'in_progress';
-    case Done = 'done';
+    case Waiting = 'Oczekujące';
+    case In_Progress = 'W trakcie';
+    case Done = 'Wykonane';
 }

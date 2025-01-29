@@ -1,11 +1,53 @@
 <?php
 
+require_once 'command/CommandManager.php';
 require_once 'database/DatabaseConnectionManager.php';
-require_once 'entity/Task.php';
-require_once 'entity/TaskCreator.php';
-require_once 'command/CreateTaskCommand.php';
 
 $connection = new DatabaseConnectionManager();
+$commandManager  = new CommandManager($connection);
 
-$command = new CreateTaskCommand($connection);
-$command->action();
+echo("---\n\n");
+
+$commandManager->getListOfTask();
+
+$appWorks = true;
+
+while ($appWorks) {
+    echo("---\n\n");
+    echo("1. Utwórz nowe zadanie\n");
+    echo("2. Usuń zadanie\n");
+    echo("3. Zaktualizuj status zadania\n");
+    echo("4. Zaktualizuj zadanie\n");
+    echo("5. Wyświetl treść zadania\n");
+    echo("6. Wyświetl listę zadań\n");
+    echo("7. Wyjdź z programu\n");
+
+    $action = readline("Wybierz akcję: ");
+
+    echo("\n---\n\n");
+
+    switch ($action) {
+        case 1:
+            $commandManager->createTask();
+            break;
+        case 2:
+            $commandManager->deleteTask();
+            break;
+        case 3:
+            $commandManager->updateStatusOfTask();
+            break;
+        case 4:
+            $commandManager->updateTask();
+            break;
+        case 5:
+            $commandManager->getTask();
+            break;
+        case 6:
+            $commandManager->getListOfTask();
+            break;
+        case 7:
+            $appWorks = false;
+            break;
+    }
+}
+

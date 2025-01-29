@@ -2,7 +2,7 @@
 
 require_once 'database/DatabaseConnectionManager.php';
 
-class DeleteTaskCommand
+class GetTaskCommand
 {
     private DatabaseConnectionManager $manager;
 
@@ -11,13 +11,13 @@ class DeleteTaskCommand
         $this->manager = $manager;
     }
 
-    public function action(): void
+    public function action(): ?object
     {
         $id = "";
         $correctId = false;
 
         while (!$correctId){
-            $id = readline("Podaj ID zadania do usunięcia:");
+            $id = readline("Podaj ID poszukiwanego zadania:");
 
             if($this->manager->findTask($id) == null){
                 echo "Nie ma takiego zadania, spróbuj ponownie.\n";
@@ -26,6 +26,6 @@ class DeleteTaskCommand
             }
         }
 
-        $this->manager->removeTask($id);
+        return $this->manager->findTask($id);
     }
 }

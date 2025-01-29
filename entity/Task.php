@@ -5,26 +5,68 @@ require_once 'Status.php';
 
 class Task
 {
-    public string $id;
-    public string $description;
-    public Status $status;
-    public Priority $priority;
-    public DateTime $createdAt;
-    public DateTime $updatedAt;
+    private(set) string $id;
+    private(set) string $description;
+    private(set) Status $status;
+    private(set) Priority $priority;
+    private(set) DateTime $createdAt;
+    private(set) DateTime $updatedAt;
 
-    public function __construct(int $id, string $description, Priority $priority)
+    private function __construct(){
+        $this->createdAt = new DateTime(); //todo rozwiązać to lepiej
+    }
+
+    public static function defaultConstructor(
+        string $id,
+        string $description,
+        string $status,
+        string $priority
+    ): Task
     {
-        $this->id = $id;
-        $this->description = $description;
-        $this->status = Status::Waiting;
-        $this->priority = $priority;
-        $this->createdAt  = new DateTime('now', new DateTimeZone('Europe/Warsaw'));
-        $this->updatedAt  = new DateTime('now', new DateTimeZone('Europe/Warsaw'));
+        $task = new Task();
+
+        $task->setId($id);
+        $task->setDescription($description);
+        $task->setStatus($status);
+        $task->setPriority($priority);
+
+        $task->setCreatedAt();
+        $task->setUpdatedAt();
+
+        return $task;
+    }
+
+    public static function fullConstructor(
+        string $id,
+        string $description,
+        string $status,
+        string $priority,
+        DateTime $createdAt,
+        DateTime $updatedAt
+    ): Task
+    {
+        $task = new Task();
+
+        $task->setId($id);
+        $task->setDescription($description);
+        $task->setStatus($status);
+        $task->setPriority($priority);
+
+        $task->setCreatedAt($createdAt);
+        $task->setUpdatedAt($updatedAt);
+
+        return $task;
     }
 
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function setId(string $id): Task
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getDescription(): string
@@ -43,9 +85,9 @@ class Task
         return $this->status;
     }
 
-    public function setStatus(Status $status): Task
+    public function setStatus(string $status): Task
     {
-        $this->status = $status;
+        $this->status = Status::from($status);
         return $this;
     }
 
@@ -54,9 +96,9 @@ class Task
         return $this->priority;
     }
 
-    public function setPriority(Priority $priority): Task
+    public function setPriority(string $priority): Task
     {
-        $this->priority = $priority;
+        $this->priority = Priority::from($priority);
         return $this;
     }
 
@@ -65,14 +107,20 @@ class Task
         return $this->createdAt;
     }
 
+    public function setCreatedAt(?DateTime $dateTime = null): Task
+    {
+        $this->updatedAt = $dateTime ?? new DateTime('now', new DateTimeZone('Europe/Warsaw'));
+        return $this;
+    }
+
     public function getUpdatedAt(): DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(DateTime $updatedAt): Task
+    public function setUpdatedAt(?DateTime $dateTime = null): Task
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = $dateTime ?? new DateTime('now', new DateTimeZone('Europe/Warsaw'));
         return $this;
     }
 }

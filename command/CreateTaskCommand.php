@@ -1,6 +1,7 @@
 <?php
 
 require_once 'database/DatabaseConnectionManager.php';
+require_once 'entity/Priority.php';
 
 class CreateTaskCommand
 {
@@ -15,13 +16,28 @@ class CreateTaskCommand
     {
         $content = readline("Wprowadź treść zadania:");
 
-        echo("Ustaw priorytet zadania\n");
-        echo("1. Wysoki\n");
-        echo("2. Średni\n");
-        echo("3. Niski\n");
-        $priority = readline("Wybierz z podanych:");
+        $priority = "";
+        $correctPriority = false;
 
-        echo $content." ".$priority;
+        while (!$correctPriority) {
+            echo("Ustaw priorytet zadania\n");
+            echo("1. ".Priority::High->value."\n");
+            echo("2. ".Priority::Medium->value."\n");
+            echo("3. ".Priority::Low->value."\n");
+
+            $priority = readline("Wybierz z podanych:");
+
+            if(Priority::tryFrom($priority) == null) {
+                echo("Błędna wartość, spróbuj ponownie");
+            }
+            else{
+                $correctPriority = true;
+            }
+        }
+
+
+
+        $this->manager->createTask($content, $priority);
     }
 
 

@@ -2,7 +2,7 @@
 
 enum Priority: string
 {
-    case Low = 'low';
-    case Medium = 'medium';
-    case High = 'high';
+    case Low = 'Niski';
+    case Medium = 'Średni';
+    case High = 'Wysoki';
 }

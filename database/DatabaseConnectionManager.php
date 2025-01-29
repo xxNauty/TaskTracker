@@ -1,74 +1,90 @@
 <?php
 
+require_once 'entity/Task.php';
+require_once 'entity/Status.php';
+
 class DatabaseConnectionManager
 {
-    private const string DATABASE_URL = "database/data.json";
-    private mixed $file;
-    private array $data = [];
+    private const string DATABASE_URL = "database/tasks/";
+    private const string DATABASE_FILE_URL = "database/tasks/task-";
+    private const string DATABASE_EXTENSION = ".json";
 
-    public function openConnection(): void
+    public function findTask(string $id): ?Task
     {
-        $this->file = fopen(self::DATABASE_URL, 'a+');
-        $this->readData();
-    }
+        $data = json_decode(file_get_contents(self::DATABASE_FILE_URL.$id.self::DATABASE_EXTENSION), true);
 
-    public function readData(): void
-    {
-        $this->data = json_decode(file_get_contents(self::DATABASE_URL)) ?? [];
-    }
-
-//    public function appendData(Task $task): void
-//    {
-//        $this->data[] = $task;
-//    }
-
-    private function getLastTaskId(): int
-    {
-        $task = end($this->data);
-        if($task){
-            return $task->id;
-        }
-        return 0;
-    }
-
-    public function createTask(string $description, Priority $priority): void
-    {
-        $this->data[] = new Task($this->getLastTaskId(), $description, $priority);
-    }
-
-    public function removeTask(string $id): void
-    {
-        foreach ($this->data as $key => $task) {
-            if ($task->id === $id) {
-                unset($this->data[$key]);
-            }
-        }
-    }
-
-
-    public function findTask(string $id): ?object //todo: sprawdzić czy da się poprawić na ?Task
-    {
-        foreach ($this->data as $task){
-            if ($task->id === $id){
-                /** @var Task $task */
-                return $task;
-            }
-        }
-        return null;
+        return Task::fullConstructor(
+            $data['id'],
+            $data['description'],
+            $data['status'],
+            $data['priority'],
+            DateTime::createFromFormat("Y-m-d H:i:s.u", $data['createdAt']['date'], new DateTimeZone('Europe/Warsaw')),
+            DateTime::createFromFormat("Y-m-d H:i:s.u", $data['updatedAt']['date'], new DateTimeZone('Europe/Warsaw'))
+        );
     }
 
     public function findAllTasks(): array
     {
-        return $this->data;
+        $files = scandir(self::DATABASE_URL);
+        $files = array_slice($files, 2);
+
+        $tasks = [];
+
+        foreach ($files as $task) {
+            $data = json_decode(file_get_contents(self::DATABASE_URL.$task), true);
+
+            $tasks[] = Task::fullConstructor(
+                $data['id'],
+                $data['description'],
+                $data['status'],
+                $data['priority'],
+
+                DateTime::createFromFormat("Y-m-d H:i:s.u", $data['createdAt']['date'], new DateTimeZone('Europe/Warsaw')), //u -> mikrosekundy
+                DateTime::createFromFormat("Y-m-d H:i:s.u", $data['updatedAt']['date'], new DateTimeZone('Europe/Warsaw'))
+            );
+        }
+
+        return $tasks;
     }
 
-    public function saveData(): void
+    private function getLastTaskId(): int
     {
-        file_put_contents(self::DATABASE_URL, json_encode($this->data));
+        $files = scandir(self::DATABASE_URL);
+
+        sort($files);
+
+        return (int) substr(end($files), -6, 1) ;
     }
 
-    public function closeConnection(): void
+    public function createTask(string $description, string $priority): void
     {
-        fclose($this->file);
+        $task = Task::defaultConstructor(
+            $this->getLastTaskId() + 1,
+            $description,
+            Status::Waiting->value,
+            $priority,
+        );
+
+        file_put_contents(self::DATABASE_FILE_URL.$task->getId().self::DATABASE_EXTENSION, json_encode($task, JSON_PRETTY_PRINT));
     }
+
+    public function removeTask(string $id): void
+    {
+        unlink(self::DATABASE_FILE_URL.$id.self::DATABASE_EXTENSION);
+    }
+
+    public function updateStatusOfTask(string $id, string $status): void
+    {
+        $task = $this->findTask($id);
+
+        $task->setStatus($status);
+
+        $this->updateTask($task);
+    }
+
+    public function updateTask(Task $task): void
+    {
+        file_put_contents(self::DATABASE_FILE_URL.$task->getId().self::DATABASE_EXTENSION, json_encode($task, JSON_PRETTY_PRINT));
+    }
+
 }
