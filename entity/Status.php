@@ -1,6 +1,5 @@
 <?php
 
-//name = value
 enum Status: string
 {
     case Waiting = 'Oczekujące';

@@ -15,6 +15,7 @@ class CommandManager
     private UpdateStatusOfTaskCommand $updateStatusOfTaskCommand;
     private GetTaskCommand $getTaskCommand;
     private GetListOfTaskCommand $getListOfTaskCommand;
+    private GetFilteredListOfTaskCommand $getFilteredListOfTaskCommand;
 
     public function __construct(
         DatabaseConnectionManager $manager
@@ -25,6 +26,7 @@ class CommandManager
         $this->updateStatusOfTaskCommand = new UpdateStatusOfTaskCommand($manager);
         $this->getTaskCommand = new GetTaskCommand($manager);
         $this->getListOfTaskCommand = new GetListOfTaskCommand($manager);
+        $this->getFilteredListOfTaskCommand = new GetFilteredListOfTaskCommand($manager);
     }
 
     public function createTask(): void
@@ -57,4 +59,8 @@ class CommandManager
         $this->getListOfTaskCommand->action();
     }
 
+    public function getFilteredListOfTask(): void
+    {
+        $this->getFilteredListOfTaskCommand->action();
+    }
 }

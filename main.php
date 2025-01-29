@@ -20,7 +20,8 @@ while ($appWorks) {
     echo("4. Zaktualizuj zadanie\n");
     echo("5. Wyświetl treść zadania\n");
     echo("6. Wyświetl listę zadań\n");
-    echo("7. Wyjdź z programu\n");
+    echo("7. Wyświetl listę zadań o wybranym statusie");
+    echo("8. Wyjdź z programu\n");
 
     $action = readline("Wybierz akcję: ");
 
@@ -46,6 +47,9 @@ while ($appWorks) {
             $commandManager->getListOfTask();
             break;
         case 7:
+            $commandManager->getFilteredListOfTask();
+            break;
+        case 8:
             $appWorks = false;
             break;
     }

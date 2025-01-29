@@ -8,6 +8,7 @@ class DatabaseConnectionManager
     private const string DATABASE_URL = "database/tasks/";
     private const string DATABASE_FILE_URL = "database/tasks/task-";
     private const string DATABASE_EXTENSION = ".json";
+    private const string TIMEZONE = "Europe/Warsaw";
 
     public function findTask(string $id): ?Task
     {
@@ -18,15 +19,15 @@ class DatabaseConnectionManager
             $data['description'],
             $data['status'],
             $data['priority'],
-            DateTime::createFromFormat("Y-m-d H:i:s.u", $data['createdAt']['date'], new DateTimeZone('Europe/Warsaw')),
-            DateTime::createFromFormat("Y-m-d H:i:s.u", $data['updatedAt']['date'], new DateTimeZone('Europe/Warsaw'))
+            DateTime::createFromFormat("Y-m-d H:i:s.u", $data['createdAt']['date'], new DateTimeZone(self::TIMEZONE)),
+            DateTime::createFromFormat("Y-m-d H:i:s.u", $data['updatedAt']['date'], new DateTimeZone(self::TIMEZONE))
         );
     }
 
     public function findAllTasks(): array
     {
         $files = scandir(self::DATABASE_URL);
-        $files = array_slice($files, 2);
+        $files = array_slice($files, 2); //usuwa folder . oraz ..
 
         $tasks = [];
 
@@ -39,12 +40,27 @@ class DatabaseConnectionManager
                 $data['status'],
                 $data['priority'],
 
-                DateTime::createFromFormat("Y-m-d H:i:s.u", $data['createdAt']['date'], new DateTimeZone('Europe/Warsaw')), //u -> mikrosekundy
-                DateTime::createFromFormat("Y-m-d H:i:s.u", $data['updatedAt']['date'], new DateTimeZone('Europe/Warsaw'))
+                DateTime::createFromFormat("Y-m-d H:i:s.u", $data['createdAt']['date'], new DateTimeZone(self::TIMEZONE)), //u -> mikrosekundy
+                DateTime::createFromFormat("Y-m-d H:i:s.u", $data['updatedAt']['date'], new DateTimeZone(self::TIMEZONE))
             );
         }
 
         return $tasks;
+    }
+
+    public function findByStatus(string $status): array
+    {
+        $tasks = $this->findAllTasks();
+        $filteredTasks = [];
+
+        /** @var Task $task */
+        foreach ($tasks as $task){
+            if($task->getStatus() == $status){
+                $filteredTasks[] = $task;
+            }
+        }
+
+        return $filteredTasks;
     }
 
     private function getLastTaskId(): int
