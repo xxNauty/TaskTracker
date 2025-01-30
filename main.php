@@ -13,15 +13,15 @@ $commandManager->getListOfTask();
 $appWorks = true;
 
 while ($appWorks) {
-    echo("---\n\n");
+    echo("\n\n---\n\n");
     echo("1. Utwórz nowe zadanie\n");
     echo("2. Usuń zadanie\n");
     echo("3. Zaktualizuj status zadania\n");
     echo("4. Zaktualizuj zadanie\n");
     echo("5. Wyświetl treść zadania\n");
     echo("6. Wyświetl listę zadań\n");
-    echo("7. Wyświetl listę zadań o wybranym statusie");
-    echo("8. Wyjdź z programu\n");
+    echo("7. Wyświetl listę zadań o wybranym statusie\n");
+    echo("8. Wyjdź z programu\n\n");
 
     $action = readline("Wybierz akcję: ");
 
@@ -52,6 +52,8 @@ while ($appWorks) {
         case 8:
             $appWorks = false;
             break;
+        default:
+            echo("Nieprawidłowy wybór, spróbuj ponownie");
     }
 }
 

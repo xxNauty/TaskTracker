@@ -21,7 +21,8 @@ class DeleteTaskCommand
 
             if($this->manager->findTask($id) == null){
                 echo "Nie ma takiego zadania, spróbuj ponownie.\n";
-            }else{
+            }
+            else{
                 $correctId  = true;
             }
         }

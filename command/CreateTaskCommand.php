@@ -35,10 +35,6 @@ class CreateTaskCommand
             }
         }
 
-
-
         $this->manager->createTask($content, $priority);
     }
-
-
 }

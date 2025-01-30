@@ -5,6 +5,7 @@ require_once 'DeleteTaskCommand.php';
 require_once 'UpdateTaskCommand.php';
 require_once 'GetTaskCommand.php';
 require_once 'GetListOfTaskCommand.php';
+require_once 'GetFilteredListOfTaskCommand.php';
 require_once 'UpdateStatusOfTaskCommand.php';
 
 class CommandManager

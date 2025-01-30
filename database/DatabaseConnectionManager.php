@@ -12,7 +12,13 @@ class DatabaseConnectionManager
 
     public function findTask(string $id): ?Task
     {
-        $data = json_decode(file_get_contents(self::DATABASE_FILE_URL.$id.self::DATABASE_EXTENSION), true);
+        $filename = self::DATABASE_FILE_URL.$id.self::DATABASE_EXTENSION;
+
+        if(!file_exists($filename)){
+            return null;
+        }
+
+        $data = json_decode(file_get_contents($filename), true);
 
         return Task::fullConstructor(
             $data['id'],
@@ -24,10 +30,19 @@ class DatabaseConnectionManager
         );
     }
 
+    private function filterArrayByPrefix($array, $prefix, $suffix): array
+    {
+        return array_filter($array, function ($value) use ($prefix, $suffix) {
+            return str_starts_with($value, $prefix) && str_ends_with($value, $suffix);
+        });
+    }
+
     public function findAllTasks(): array
     {
         $files = scandir(self::DATABASE_URL);
-        $files = array_slice($files, 2); //usuwa folder . oraz ..
+
+        $files = $this->filterArrayByPrefix($files, "task-", ".json");
+        sort($files);
 
         $tasks = [];
 
@@ -48,14 +63,14 @@ class DatabaseConnectionManager
         return $tasks;
     }
 
-    public function findByStatus(string $status): array
+    public function filterByStatus(string $status): array
     {
         $tasks = $this->findAllTasks();
         $filteredTasks = [];
 
         /** @var Task $task */
         foreach ($tasks as $task){
-            if($task->getStatus() == $status){
+            if($task->getStatus()->value == $status){
                 $filteredTasks[] = $task;
             }
         }
@@ -63,19 +78,36 @@ class DatabaseConnectionManager
         return $filteredTasks;
     }
 
-    private function getLastTaskId(): int
+    private function getLastTaskId(): string
     {
         $files = scandir(self::DATABASE_URL);
 
+        $files = $this->filterArrayByPrefix($files, "task-", ".json");
         sort($files);
 
-        return (int) substr(end($files), -6, 1) ;
+        $lastTaskId = substr(end($files), -8, 3);
+
+        if($lastTaskId === ""){
+            $lastTaskId = "000";
+        }
+
+        $lastTaskId = (string)(((int) $lastTaskId) + 1);
+
+//        if(strlen($lastTaskId) === 1){
+//            $lastTaskId = "00".$lastTaskId;
+//        }
+//        else if(strlen($lastTaskId)  === 2){
+//            $lastTaskId  = "0".$lastTaskId;
+//        }
+
+        return $lastTaskId;
     }
 
     public function createTask(string $description, string $priority): void
     {
+        echo($this->getLastTaskId());
         $task = Task::defaultConstructor(
-            $this->getLastTaskId() + 1,
+            $this->getLastTaskId(),
             $description,
             Status::Waiting->value,
             $priority,
