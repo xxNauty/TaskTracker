@@ -14,23 +14,20 @@ class UpdateStatusOfTaskCommand
 
     public function action(): void
     {
-        $id = "";
         $correctId = false;
-
-        while (!$correctId){
+        do {
             $id = readline("Podaj ID zadania do zaktualizowania statusu:");
+            echo("\n");
 
             if($this->manager->findTask($id) == null){
                 echo "Nie ma takiego zadania, spróbuj ponownie.\n";
             }else{
                 $correctId  = true;
             }
-        }
+        } while (!$correctId);
 
-        $status = "";
         $correctStatus = false;
-
-        while (!$correctStatus){
+        do {
             echo("Ustaw nowy status zadania\n");
             echo("1. ".Status::Waiting->value."\n");
             echo("2. ".Status::In_Progress->value."\n");
@@ -43,7 +40,7 @@ class UpdateStatusOfTaskCommand
             else{
                 $correctStatus = true;
             }
-        }
+        } while (!$correctStatus);
 
         $this->manager->updateStatusOfTask($id, $status);
     }

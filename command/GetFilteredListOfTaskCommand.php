@@ -14,15 +14,14 @@ class  GetFilteredListOfTaskCommand
 
     public function action(): void
     {
-        $status = "";
         $correctStatus = false;
-
-        while (!$correctStatus){
+        do {
             echo("Podaj jakie zadania chcesz zobaczyć: \n");
             echo("1. ".Status::Done->value."\n");
             echo("2. ".Status::In_Progress->value."\n");
             echo("3. ".Status::Waiting->value."\n");
             $status = readline("Wybierz z podanych:");
+            echo("\n");
 
             if(Status::tryFrom($status) == null){
                 echo("Nieprawidłowa wartość, spróbuj ponownie");
@@ -30,7 +29,7 @@ class  GetFilteredListOfTaskCommand
             else{
                 $correctStatus = true;
             }
-        }
+        } while (!$correctStatus);
 
         if(count($this->manager->filterByStatus($status)) == 0) {
             echo("Brak zadań do wyświetlenia\n\n");

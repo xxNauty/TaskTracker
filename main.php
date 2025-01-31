@@ -3,17 +3,16 @@
 require_once 'command/CommandManager.php';
 require_once 'database/DatabaseConnectionManager.php';
 
-$connection = new DatabaseConnectionManager();
-$commandManager  = new CommandManager($connection);
+$commandManager  = new CommandManager(new DatabaseConnectionManager());
 
-echo("---\n\n");
+echo("\n---\n\n");
 
 $commandManager->getListOfTask();
 
 $appWorks = true;
 
 while ($appWorks) {
-    echo("\n\n---\n\n");
+    echo("---\n\n");
     echo("1. Utwórz nowe zadanie\n");
     echo("2. Usuń zadanie\n");
     echo("3. Zaktualizuj status zadania\n");

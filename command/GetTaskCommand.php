@@ -18,6 +18,7 @@ class GetTaskCommand
 
         while (!$correctId){
             $id = readline("Podaj ID poszukiwanego zadania:");
+            echo("\n");
 
             if($this->manager->findTask($id) == null){
                 echo "Nie ma takiego zadania, spróbuj ponownie.\n";

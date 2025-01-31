@@ -19,13 +19,14 @@ class CreateTaskCommand
         $priority = "";
         $correctPriority = false;
 
-        while (!$correctPriority) {
-            echo("Ustaw priorytet zadania\n");
+        do {
+            echo("\nUstaw priorytet zadania\n");
             echo("1. ".Priority::High->value."\n");
             echo("2. ".Priority::Medium->value."\n");
             echo("3. ".Priority::Low->value."\n");
 
             $priority = readline("Wybierz z podanych:");
+            echo("\n");
 
             if(Priority::tryFrom($priority) == null) {
                 echo("Błędna wartość, spróbuj ponownie");
@@ -33,7 +34,7 @@ class CreateTaskCommand
             else{
                 $correctPriority = true;
             }
-        }
+        }while (!$correctPriority);
 
         $this->manager->createTask($content, $priority);
     }

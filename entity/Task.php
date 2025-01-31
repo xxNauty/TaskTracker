@@ -25,13 +25,15 @@ class Task
     {
         $task = new Task();
 
-        $task->setId($id);
-        $task->setDescription($description);
-        $task->setStatus($status);
-        $task->setPriority($priority);
+        $task
+            ->setId($id)
+            ->setDescription($description)
+            ->setStatus($status)
+            ->setPriority($priority);
 
-        $task->setCreatedAt();
-        $task->setUpdatedAt();
+        $task
+            ->setCreatedAt()
+            ->setUpdatedAt();
 
         return $task;
     }
@@ -47,13 +49,15 @@ class Task
     {
         $task = new Task();
 
-        $task->setId($id);
-        $task->setDescription($description);
-        $task->setStatus($status);
-        $task->setPriority($priority);
+        $task
+            ->setId($id)
+            ->setDescription($description)
+            ->setStatus($status)
+            ->setPriority($priority);
 
-        $task->setCreatedAt($createdAt);
-        $task->setUpdatedAt($updatedAt);
+        $task
+            ->setCreatedAt($createdAt)
+            ->setUpdatedAt($updatedAt);
 
         return $task;
     }

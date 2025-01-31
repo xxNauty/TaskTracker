@@ -18,6 +18,7 @@ class DeleteTaskCommand
 
         while (!$correctId){
             $id = readline("Podaj ID zadania do usunięcia:");
+            echo("\n");
 
             if($this->manager->findTask($id) == null){
                 echo "Nie ma takiego zadania, spróbuj ponownie.\n";

@@ -93,19 +93,18 @@ class DatabaseConnectionManager
 
         $lastTaskId = (string)(((int) $lastTaskId) + 1);
 
-//        if(strlen($lastTaskId) === 1){
-//            $lastTaskId = "00".$lastTaskId;
-//        }
-//        else if(strlen($lastTaskId)  === 2){
-//            $lastTaskId  = "0".$lastTaskId;
-//        }
+        if(strlen($lastTaskId) === 1){
+            $lastTaskId = "00".$lastTaskId;
+        }
+        else if(strlen($lastTaskId)  === 2){
+            $lastTaskId  = "0".$lastTaskId;
+        }
 
         return $lastTaskId;
     }
 
     public function createTask(string $description, string $priority): void
     {
-        echo($this->getLastTaskId());
         $task = Task::defaultConstructor(
             $this->getLastTaskId(),
             $description,

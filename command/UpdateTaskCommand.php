@@ -15,10 +15,8 @@ class UpdateTaskCommand
 
     public function action(): void
     {
-        $id = "";
         $correctId = false;
-
-        while (!$correctId){
+        do {
             $id = readline("Podaj ID zadania do zaktualizowania statusu:");
 
             if($this->manager->findTask($id) == null){
@@ -26,26 +24,26 @@ class UpdateTaskCommand
             }else{
                 $correctId  = true;
             }
-        }
+        } while (!$correctId);
 
         $task = $this->manager->findTask($id);
 
-        echo("Aktualna treść zadania: ". $task->getDescription());
-        echo("Aktualny status zadania: ". $task->getStatus()->value); //todo: do posprzątania
-        echo("Aktualny status zadania: ". $task->getStatus()->value);
-        echo("Aktualny priorytet zadania: ".  $task->getPriority()->value);
+        echo("Aktualna treść zadania: ". $task->getDescription()."\n");
+        echo("Aktualny status zadania: ". $task->getStatus()->value)."\n";
+        echo("Aktualny status zadania: ". $task->getStatus()->value)."\n";
+        echo("Aktualny priorytet zadania: ".  $task->getPriority()->value)."\n";
 
         $description = readline("Podaj nową treść zadania: ");
+        echo("\n");
 
-        $status = "";
         $correctStatus = false;
-
-        while (!$correctStatus){
+        do {
             echo("Ustaw nowy status zadania\n");
             echo("1. ".Status::Waiting->value."\n");
             echo("2. ".Status::In_Progress->value."\n");
             echo("3. ".Status::Done->value."\n");
             $status = readline("Wybierz z podanych:");
+            echo("\n");
 
             if(Status::tryFrom($status) == null) {
                 echo("Błędna wartość");
@@ -53,14 +51,10 @@ class UpdateTaskCommand
             else{
                 $correctStatus = true;
             }
-        }
+        } while (!$correctStatus);
 
-
-
-        $priority = "";
         $correctPriority = false;
-
-        while (!$correctPriority) {
+        do {
             echo("Ustaw priorytet zadania\n");
             echo("1. ".Priority::High->value."\n");
             echo("2. ".Priority::Medium->value."\n");
@@ -74,12 +68,13 @@ class UpdateTaskCommand
             else{
                 $correctPriority = true;
             }
-        }
+        } while (!$correctPriority);
 
-        $task->setDescription($description);
-        $task->setStatus($status);
-        $task->setPriority($priority);
-        $task->setUpdatedAt();
+        $task
+            ->setDescription($description)
+            ->setStatus($status)
+            ->setPriority($priority)
+            ->setUpdatedAt();
 
         $this->manager->updateTask($task);
     }
